@@ -26,20 +26,16 @@ const db = {};
 db.Sequelize = Sequelize;
 db.conn = connection;
 
-db.posts = {
-  model: connection.define("posts", {
-    title: DataTypes.STRING,
-    body: DataTypes.TEXT,
-  }),
-};
+db.posts = connection.define("posts", {
+  title: DataTypes.STRING,
+  body: DataTypes.TEXT,
+});
 
-db.images = {
-  model: connection.define("images", {
-    post_id: DataTypes.NUMBER,
-    name: DataTypes.STRING,
-    type: DataTypes.STRING,
-    data: DataTypes.BLOB("long"),
-  }),
-};
+db.images = connection.define("images", {
+  post_id: DataTypes.NUMBER,
+  name: DataTypes.STRING,
+  type: DataTypes.STRING,
+  data: DataTypes.BLOB("long"),
+});
 
 export default db; // db : { conn, posts, images }
