@@ -1,0 +1,60 @@
+{
+  "name": "pet-shop",
+  "version": "1.0.0",
+  "description": "Pet Shop.  (Node.js + Postgres + React + TypeScript)",
+  "main": "server/index.js",
+  "type": "module",
+  "engines": {
+    "node": "16.13.2",
+    "yarn": "1.22.15"
+  },
+  "private": true,
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "1.19.0",
+    "cors": "2.8.5",
+    "dotenv": "8.2.0",
+    "express": "4.17.1",
+    "finale-rest": "1.0.6",
+    "jsonwebtoken": "^8.5.1",
+    "multer": "^1.4.2",
+    "nodemon": "^1.18.8",
+    "npm-run-all": "^4.1.5",
+    "pg": "^8.7.3",
+    "pgtools": "^0.3.2",
+    "recompose": "^0.30.0",
+    "sequelize": "6.6.2"
+  },
+  "scripts": {
+    "start": "npm-run-all --parallel watch:server",
+    "start:web": "react-scripts start",
+    "start:server": "node server",
+    "watch:server": "nodemon --watch server",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "keywords": [
+    "posts",
+    "upload",
+    "image",
+    "node",
+    "postgresql",
+    "react",
+    "typescript"
+  ],
+  "author": "KambiFire",
+  "license": "ISC",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
