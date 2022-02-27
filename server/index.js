@@ -1,111 +1,62 @@
-import cors from "cors";
-import bodyParser from "body-parser";
-import finale from "finale-rest";
-import express, { urlencoded } from "express";
-import pgtools from "pgtools";
-
-import routes from "./src/routes.js";
-import db from "./src/models.js";
-import dbConfig from "./src/config.js";
+require("dotenv").config({ path: "./.env.local" });
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
 
 const app = express();
-app.use(cors());
+const WEB_PORT = process.env.WEB_PORT;
+
+var corsOptions = {
+  origin: `http://localhost:${WEB_PORT}`,
+};
+
+app.use(cors(corsOptions));
+
+// parse requests of content-type - application/json
 app.use(bodyParser.json());
 
-/* app.use(async (req, res, next) => {
-  try {
-    if (!req.headers.authorization)
-      throw new Error("Authorization header is required");
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
 
-    const accessToken = req.headers.authorization.trim().split(" ")[1];
+// database
+const db = require("./app/models");
+const Role = db.role;
 
-    next();
-  } catch (error) {
-    handleLog("Authorization failed:", error);
-    next(error.message);
-  }
-  handleLog("DB query...");
-}); */
+// db.sequelize.sync();
+// force: true will drop the table if it already exists
+db.connect.sync({ force: true }).then(() => {
+  console.log("Drop and Resync Database with { force: true }");
+  initial();
+});
 
-const connection = db.conn;
+// simple route
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to bezkoder application." });
+});
 
-// Testing connection.
-const testConnection = async () => {
-  console.log("Testing the database connection...");
-  try {
-    await connection.authenticate();
-    handleLog("Database connection test: success");
-    return true;
-  } catch (error) {
-    handleLog("Unable to connect to the database:", error);
-    return false;
-  }
-};
+// routes
+require("./app/routes/auth.routes")(app);
+require("./app/routes/user.routes")(app);
 
-const dbCreateIfNotExist = () => {
-  console.log("Creating database...");
-  const config = {
-    user: dbConfig.USER,
-    host: dbConfig.HOST,
-    password: dbConfig.PASSWORD,
-    port: dbConfig.PORT,
-  };
-  try {
-    pgtools.createdb(config, dbConfig.DB, (err, res) => {
-      if (err) {
-        handleLog("Creating DB error:", err);
-        process.exit(-1);
-      } else {
-        handleLog("Creating DB successful");
-        //startServer();
-      }
-      console.log("Creating DB:", res);
-    });
-  } catch (error) {
-    handleLog("Unable to Create DB:", error);
-  }
-};
+// set port, listen for requests
+const SERVER_PORT = process.env.REACT_APP_SERVER_PORT || 8081;
+app.listen(SERVER_PORT, () => {
+  console.log(`Server is running on port ${SERVER_PORT}.`);
+});
 
-// Start server
-const startServer = () => {
-  // Create connection
-  console.log("Creating connection...");
-  finale.initialize({ app, sequelize: connection });
-
-  // Create resources
-  console.log("Creating resources...");
-  finale.resource({
-    model: db.posts,
-    model: db.images,
-    endpoints: ["/posts", "/posts/:id"],
+function initial() {
+  Role.create({
+    id: 1,
+    name: "user",
   });
 
-  // Start the web server on the specified port.
-
-  app.use(urlencoded({ extended: true }));
-  routes(app);
-  const port = process.env.REACT_APP_DB_WEB_PORT || 3001;
-
-  console.log(`Starting server on PORT:${port} ...`);
-  connection.sync().then(() => {
-    app.listen(port, () => {
-      handleLog(
-        `Server is up and running: Listening on -> ${process.env.REACT_APP_DB_HOST}:${port}`
-      );
-    });
+  Role.create({
+    id: 2,
+    name: "moderator",
   });
-};
 
-const initApp = async () => {
-  const connect = await testConnection();
-  console.log(connect);
-  /* if (connect) startServer();
-  else dbCreateIfNotExist(); */
-};
-
-initApp();
-
-function handleLog(source, err) {
-  const color = err ? "\x1b[31m" : "\x1b[32m";
-  console.log(color, `${source} ${err ? err.message : ""}`, "\x1b[0m");
+  Role.create({
+    id: 3,
+    name: "admin",
+  });
 }

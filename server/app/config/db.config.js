@@ -1,7 +1,6 @@
-import dotenv from "dotenv";
-dotenv.config({ path: "./.env.local" });
+require("dotenv").config({ path: "./.env.local" });
 
-const dbConfig = {
+module.exports = {
   HOST: process.env.REACT_APP_DB_HOST,
   USER: process.env.REACT_APP_DB_USER,
   PASSWORD: process.env.REACT_APP_DB_PASSWORD,
@@ -16,7 +15,3 @@ const dbConfig = {
     idle: 10000,
   },
 };
-
-export const JWT_TOKEN_KEY = { TOKEN_KEY: process.env.JWT_TOKEN_KEY };
-
-export default dbConfig;
