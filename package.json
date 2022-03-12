@@ -9,7 +9,6 @@
     "node": "16.13.2",
     "yarn": "1.22.15"
   },
-  "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.2.7",
@@ -46,18 +45,16 @@
     "yup": "^0.32.9"
   },
   "scripts": {
-    "start": "npm-run-all --parallel watch:server",
     "start:web": "react-scripts start",
     "start:server": "node server",
     "watch:server": "nodemon --watch server",
+    "start": "npm-run-all --parallel start:web start:server",
+    "dev": "npm-run-all --parallel start:web watch:server",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
   "keywords": [
-    "posts",
-    "upload",
-    "image",
     "node js",
     "express",
     "jwt",
